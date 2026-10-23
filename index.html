@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>Verkauf</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Verkauf">
+<meta name="theme-color" content="#0d7a6a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<style>
+:root{
+  --bg:#f3f4f6;--panel:#fff;--fg:#1b2127;--muted:#6a737d;--line:#e2e5e9;--accent:#0d7a6a;--accent-ink:#fff;--soft:#e6f2ef;
+  --warn:#b85c0f;--bad:#c0322b;--hover:#f6f8f9;--shadow:0 1px 2px rgba(16,24,40,.05),0 1px 3px rgba(16,24,40,.06);
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);--safe-l:env(safe-area-inset-left,0px);--safe-r:env(safe-area-inset-right,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#16191d;--panel:#1f2328;--fg:#e8ebee;--muted:#9aa3ad;--line:#2f353c;--accent:#3cbfa9;--accent-ink:#0c1513;--soft:#1c332f;--warn:#f0a25e;--bad:#f2827a;--hover:#252a30;--shadow:none;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#16191d;--panel:#1f2328;--fg:#e8ebee;--muted:#9aa3ad;--line:#2f353c;--accent:#3cbfa9;--accent-ink:#0c1513;--soft:#1c332f;--warn:#f0a25e;--bad:#f2827a;--hover:#252a30;--shadow:none;color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.4 var(--font);font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;overscroll-behavior:none;-webkit-user-select:none;user-select:none}
+input{-webkit-user-select:text;user-select:text}
+[hidden]{display:none!important}
+button,.btn{font:600 15px var(--font);color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 16px;min-height:44px;cursor:pointer;touch-action:manipulation}
+button:active,.btn:active{transform:scale(.97)}
+button.primary,.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+button.ghost{background:none;border-color:transparent;color:var(--accent)}
+button:disabled{opacity:.45}
+input[type=text],input[type=number],input[type=date],input[type=search]{font:16px var(--font);color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 14px;min-height:46px;width:100%;outline:none}
+input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--soft)}
+.app{display:grid;grid-template-rows:auto 1fr;height:100%;padding:var(--safe-t) var(--safe-r) 0 var(--safe-l)}
+/* Kopfleiste */
+.top{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--panel);border-bottom:1px solid var(--line)}
+.top h1{margin:0;font-size:19px;letter-spacing:-.01em;white-space:nowrap}
+.mk{display:flex;align-items:center;gap:8px;min-width:0;padding:8px 12px;border-radius:12px;background:var(--soft);color:var(--accent);border:0;font-weight:600}
+.mk span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mk small{font-weight:500;opacity:.8}
+.top .sp{flex:1}
+.top .stat{font-size:13px;color:var(--muted);text-align:right;line-height:1.25;white-space:nowrap}
+.top .stat b{display:block;font-size:17px;color:var(--fg)}
+/* Hauptbereich */
+.main{display:grid;grid-template-columns:1fr 380px;min-height:0}
+.shop{display:flex;flex-direction:column;min-height:0}
+.searchrow{padding:12px 16px 4px}
+.grid{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:10px 16px calc(16px + var(--safe-b));display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;align-content:start;grid-auto-rows:max-content}
+.art{position:relative;display:block;width:100%;height:auto;padding:0;border-radius:16px;overflow:hidden;text-align:left;background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);min-height:0}
+.art .pic{width:100%;height:0;padding-bottom:100%;position:relative;background:var(--hover) center/cover no-repeat;color:var(--muted);font-size:34px;font-weight:700}
+.art .pic span{position:absolute;inset:0;display:grid;place-items:center}
+.art .tx{padding:9px 11px 11px}
+.art .nm{font-size:14.5px;font-weight:600;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.5em}
+.art .pr{margin-top:3px;font-size:17px;font-weight:700;color:var(--accent)}
+.art .dots{display:flex;gap:3px;margin-top:5px}
+.art .dots i{width:11px;height:11px;border-radius:50%;border:1px solid rgba(0,0,0,.15)}
+.art .left{position:absolute;top:8px;right:8px;background:rgba(20,24,28,.78);color:#fff;font-size:12px;font-weight:700;border-radius:999px;padding:3px 8px}
+.art .left.zero{background:var(--bad)}
+.art.flash{animation:fl .35s}
+@keyframes fl{0%{box-shadow:0 0 0 0 var(--accent)}100%{box-shadow:0 0 0 10px transparent}}
+.none{padding:40px 16px;text-align:center;color:var(--muted)}
+/* Warenkorb */
+.cart{display:flex;flex-direction:column;min-height:0;background:var(--panel);border-left:1px solid var(--line)}
+.cart h2{margin:0;padding:14px 16px 8px;font-size:16px;display:flex;align-items:center;justify-content:space-between}
+.cart h2 button{min-height:36px;padding:6px 10px;font-size:14px}
+.lines{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:0 12px}
+.empty{color:var(--muted);text-align:center;padding:30px 10px;font-size:14px}
+.line{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--line)}
+.line .ln{font-weight:600;font-size:14.5px;line-height:1.25}
+.line .ln small{display:flex;align-items:center;gap:5px;font-weight:500;color:var(--muted);font-size:12.5px}
+.line .ln small i{width:10px;height:10px;border-radius:50%;border:1px solid rgba(0,0,0,.15)}
+.line .lt{font-weight:700;font-size:15px;text-align:right}
+.qty{display:flex;align-items:center;gap:6px}
+.qty button{min-height:38px;width:42px;padding:0;font-size:20px;border-radius:10px}
+.qty b{min-width:22px;text-align:center;font-size:16px}
+.line .pin{display:flex;align-items:center;gap:6px;justify-self:end;color:var(--muted);font-size:13px}
+.line .pin input{width:86px;min-height:38px;padding:6px 8px;text-align:right;font-size:15px}
+.pay{padding:12px 16px calc(14px + var(--safe-b));border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.sum{display:flex;align-items:baseline;justify-content:space-between}
+.sum span{color:var(--muted);font-weight:600}
+.sum b{font-size:32px;letter-spacing:-.02em}
+.seg{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:3px;gap:3px}
+.seg button{flex:1;border:0;background:none;min-height:40px;border-radius:9px;color:var(--muted);padding:6px}
+.seg button.on{background:var(--panel);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.given{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.given button{padding:6px 4px;min-height:40px;font-size:14px}
+.given button.on{background:var(--soft);border-color:var(--accent);color:var(--accent)}
+.change{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-radius:12px;background:var(--soft);color:var(--accent);font-weight:600}
+.change b{font-size:20px}
+.change.short{background:color-mix(in srgb,var(--bad) 12%,transparent);color:var(--bad)}
+.sell{min-height:58px;font-size:18px;border-radius:14px}
+/* Overlays */
+.sheet{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:rgba(15,20,25,.45);padding:20px}
+.card{background:var(--panel);border-radius:20px;box-shadow:0 24px 64px rgba(16,24,40,.3);width:min(560px,100%);max-height:calc(100% - 20px);display:flex;flex-direction:column;overflow:hidden}
+.card.wide{width:min(860px,100%)}
+.card header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.card header h2{margin:0;font-size:18px}
+.card header button{min-height:38px;padding:6px 12px}
+.card .body{padding:16px 20px;overflow:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:14px}
+.card footer{display:flex;gap:10px;justify-content:flex-end;padding:12px 20px calc(12px + var(--safe-b));border-top:1px solid var(--line);flex-wrap:wrap}
+.lbl{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:6px;display:block}
+.hint{font-size:13.5px;color:var(--muted);margin:0}
+.vars{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.var{display:flex;align-items:center;gap:10px;padding:14px;text-align:left;min-height:62px}
+.var i{width:28px;height:28px;border-radius:50%;border:1px solid rgba(0,0,0,.15);flex:none}
+.var small{display:block;color:var(--muted);font-weight:500;font-size:12.5px}
+.opt{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;text-align:left;padding:14px 16px}
+.opt small{display:block;color:var(--muted);font-weight:500;font-size:13px}
+.opt.on{border-color:var(--accent);background:var(--soft)}
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.kp div{padding:12px 14px;border-right:1px solid var(--line)}
+.kp div:last-child{border-right:0}
+.kp small{display:block;font-size:11.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.kp b{font-size:20px}
+.tbl{width:100%;border-collapse:collapse;font-size:14.5px}
+.tbl th{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);text-align:right;padding:8px 6px;border-bottom:1px solid var(--line)}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+.tbl td{padding:10px 6px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
+.tbl td small{color:var(--muted)}
+.tbl tr.storno td{opacity:.45;text-decoration:line-through}
+.tbl td button{min-height:34px;padding:4px 10px;font-size:13px}
+.welcome{max-width:560px;margin:8vh auto 0;padding:0 20px;text-align:center}
+.welcome h2{font-size:26px;margin:14px 0 8px}
+.welcome ol{text-align:left;color:var(--muted);line-height:1.6;padding-left:22px}
+.logo{width:76px;height:76px;border-radius:18px;background:var(--accent);display:inline-grid;place-items:center}
+.toast{position:fixed;left:50%;bottom:calc(24px + var(--safe-b));transform:translateX(-50%);z-index:30;display:flex;align-items:center;gap:12px;background:#1b2127;color:#fff;padding:10px 12px 10px 18px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-weight:600;max-width:calc(100% - 32px)}
+.toast button{min-height:36px;padding:6px 12px;background:rgba(255,255,255,.12);border:0;color:#fff}
+.fileb{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center}
+.fileb input{position:absolute;inset:0;opacity:0;font-size:0;cursor:pointer}
+.badge{display:inline-block;font-size:12px;font-weight:700;border-radius:6px;padding:2px 7px;background:var(--soft);color:var(--accent)}
+.badge.warn{background:color-mix(in srgb,var(--warn) 15%,transparent);color:var(--warn)}
+/* Hochformat: Warenkorb unten */
+@media (max-width:900px){
+  .main{grid-template-columns:1fr;grid-template-rows:1fr auto}
+  .cart{border-left:0;border-top:1px solid var(--line);max-height:52vh}
+  .cart.mini .lines,.cart.mini .given,.cart.mini .change,.cart.mini .seg{display:none}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));padding-bottom:16px}
+  .top .stat{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <h1>Verkauf</h1>
+    <button type="button" class="mk" id="mk-btn" hidden><span id="mk-name"></span><small id="mk-date"></small></button>
+    <div class="sp"></div>
+    <div class="stat" id="top-stat" hidden></div>
+    <button type="button" id="hist-btn" hidden>Verlauf</button>
+    <button type="button" id="menu-btn" aria-label="Menü">•••</button>
+  </div>
+
+  <div id="welcome" class="welcome" hidden>
+    <div class="logo"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg></div>
+    <h2>Kasse für deinen Stand</h2>
+    <p class="hint">Hol dir zuerst deine Artikel vom Mac:</p>
+    <ol>
+      <li>Am Mac im 3D-Druck Manager: <b>Verkauf → „Für iPad exportieren“</b>.</li>
+      <li>Die Datei <b>iPad-Artikel_….json</b> per AirDrop oder iCloud Drive aufs iPad schicken.</li>
+      <li>Hier auf <b>„Artikel laden“</b> tippen und die Datei auswählen.</li>
+    </ol>
+    <label class="btn primary fileb" style="margin-top:10px">Artikel laden …<input type="file" id="imp1" accept=".json,application/json"></label>
+  </div>
+
+  <div class="main" id="main" hidden>
+    <section class="shop">
+      <div class="searchrow"><input type="search" id="q" placeholder="Artikel suchen …" autocomplete="off"></div>
+      <div class="grid" id="grid"></div>
+    </section>
+    <aside class="cart" id="cart">
+      <h2><span id="cart-h">Aktueller Verkauf</span><button type="button" class="ghost" id="clear">Leeren</button></h2>
+      <div class="lines" id="lines"></div>
+      <div class="pay">
+        <div class="sum"><span>Summe</span><b id="total">0,00 €</b></div>
+        <div class="seg" id="payseg"><button type="button" data-pay="Bar" class="on">Bar</button><button type="button" data-pay="PayPal">PayPal</button><button type="button" data-pay="Karte">Karte</button></div>
+        <div class="given" id="given"></div>
+        <div class="change" id="change" hidden><span id="change-l">Rückgeld</span><b id="change-v"></b></div>
+        <button type="button" class="primary sell" id="sell" disabled>Verkauft</button>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- Farbauswahl -->
+<div class="sheet" id="sh-var" hidden><div class="card">
+  <header><h2 id="var-h"></h2><button type="button" data-close>Abbrechen</button></header>
+  <div class="body"><div class="vars" id="vars"></div></div>
+</div></div>
+
+<!-- Markt wählen -->
+<div class="sheet" id="sh-mk" hidden><div class="card">
+  <header><h2>Markt</h2><button type="button" data-close id="mk-close">Schließen</button></header>
+  <div class="body">
+    <div id="mk-plan-wrap"><span class="lbl">Am Mac geplant</span><div id="mk-plan" style="display:flex;flex-direction:column;gap:8px"></div></div>
+    <div><span class="lbl">Neuer Markt</span>
+      <div style="display:grid;grid-template-columns:1fr 170px;gap:10px"><input type="text" id="mk-new-name" placeholder="z. B. Flohmarkt Varel"><input type="date" id="mk-new-date"></div>
+      <button type="button" class="primary" id="mk-new" style="margin-top:10px;width:100%">Markt starten</button></div>
+    <div id="mk-old-wrap"><span class="lbl">Frühere Märkte auf diesem iPad</span><div id="mk-old" style="display:flex;flex-direction:column;gap:8px"></div></div>
+  </div>
+</div></div>
+
+<!-- Verlauf -->
+<div class="sheet" id="sh-hist" hidden><div class="card wide">
+  <header><h2 id="hist-h">Verlauf</h2><button type="button" data-close>Schließen</button></header>
+  <div class="body">
+    <div class="kp" id="hist-kp"></div>
+    <div><span class="lbl">Verkäufe</span><table class="tbl"><thead><tr><th>Zeit</th><th>Artikel</th><th>Zahlung</th><th>Summe</th><th></th></tr></thead><tbody id="hist-rows"></tbody></table><p class="hint" id="hist-empty">Noch nichts verkauft.</p></div>
+    <div><span class="lbl">Nach Artikel</span><table class="tbl"><thead><tr><th>Artikel</th><th>Mitgenommen</th><th>Verkauft</th><th>Übrig</th><th>Umsatz</th></tr></thead><tbody id="hist-art"></tbody></table></div>
+  </div>
+  <footer><button type="button" class="primary" id="send">Markt abschließen &amp; an Mac senden</button></footer>
+</div></div>
+
+<!-- Menü -->
+<div class="sheet" id="sh-menu" hidden><div class="card">
+  <header><h2>Menü</h2><button type="button" data-close>Schließen</button></header>
+  <div class="body">
+    <p class="hint" id="menu-info"></p>
+    <label class="btn fileb">Artikel neu laden (vom Mac) …<input type="file" id="imp2" accept=".json,application/json"></label>
+    <button type="button" id="m-market">Markt wechseln / neuen Markt starten</button>
+    <button type="button" id="m-send">Aktuellen Markt an Mac senden</button>
+    <p class="hint">Die Daten bleiben auf diesem iPad gespeichert, auch ohne Internet. Nach dem Markt mit „an Mac senden“ die Datei per AirDrop zum Mac schicken und dort unter <b>Verkauf → „iPad-Markt übernehmen“</b> laden.</p>
+  </div>
+</div></div>
+
+<div class="toast" id="toast" hidden><span id="toast-t"></span><button type="button" id="toast-undo" hidden>Rückgängig</button></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const eur=v=>(Math.round(v*100)/100).toLocaleString("de-DE",{style:"currency",currency:"EUR"});
+const isoToday=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
+const deDate=iso=>iso?iso.split("-").reverse().join("."):"";
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const K={data:"kasse-daten",mk:"kasse-maerkte",act:"kasse-aktiv",cart:"kasse-korb"};
+const ld=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v??d}catch(e){return d}};
+const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){toast("Speichern fehlgeschlagen – iPad-Speicher voll?");return false}};
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+
+let DATA=ld(K.data,null),MK=ld(K.mk,[]),ACT=ld(K.act,null),CART=ld(K.cart,{items:[],pay:"Bar",given:null});
+const market=()=>MK.find(m=>m.id===ACT)||null;
+const saveMk=()=>sv(K.mk,MK);
+const saveCart=()=>sv(K.cart,CART);
+const allVars=()=>(DATA?DATA.artikel:[]).flatMap(a=>a.vars.map(v=>({...v,a:a.a,p:a.p})));
+function soldOf(m){const o={};(m?m.sales:[]).forEach(s=>{if(s.storno)return;s.items.forEach(x=>o[x.k]=(o[x.k]||0)+x.qty)});return o}
+function inCart(k){return CART.items.filter(x=>x.k===k).reduce((a,x)=>a+x.qty,0)}
+function leftOf(k,m,sold){if(!m||!m.plan||m.plan[k]==null)return null;return m.plan[k]-(sold[k]||0)-inCart(k)}
+
+// ---------- Anzeige ----------
+function render(){
+  const has=!!(DATA&&DATA.artikel&&DATA.artikel.length);
+  $("welcome").hidden=has;$("main").hidden=!has;
+  ["mk-btn","hist-btn"].forEach(i=>$(i).hidden=!has);
+  if(!has)return;
+  const m=market();
+  $("mk-name").textContent=m?(m.name||"Markt"):"Kein Markt gestartet";$("mk-date").textContent=m?deDate(m.date):"";
+  renderGrid();renderCart();renderStat();
+}
+function renderStat(){
+  const m=market();$("top-stat").hidden=!m;if(!m)return;
+  let u=0,n=0;m.sales.forEach(s=>{if(s.storno)return;s.items.forEach(x=>{u+=x.qty*x.p;n+=x.qty})});
+  $("top-stat").innerHTML=`<b>${eur(u)}</b>${n} Stück · ${m.sales.filter(s=>!s.storno).length} Verkäufe`;
+}
+function renderGrid(){
+  const q=$("q").value.trim().toLowerCase(),m=market(),sold=soldOf(m);
+  const list=DATA.artikel.filter(a=>!q||(a.a+" "+a.vars.map(v=>v.f).join(" ")).toLowerCase().includes(q));
+  $("grid").innerHTML=list.length?list.map(a=>{
+    const i=DATA.artikel.indexOf(a);
+    const lefts=a.vars.map(v=>leftOf(v.k,m,sold)).filter(x=>x!=null),left=lefts.length?lefts.reduce((x,y)=>x+Math.max(0,y),0):null;
+    const ini=esc((a.a.trim()[0]||"?").toUpperCase());
+    return `<button type="button" class="art" data-i="${i}">
+      <div class="pic" ${a.img?`style="background-image:url('${a.img}')"`:""}>${a.img?"":`<span>${ini}</span>`}</div>
+      ${left!=null?`<span class="left${left<=0?" zero":""}">noch ${Math.max(0,left)}</span>`:""}
+      <div class="tx"><div class="nm">${esc(a.a)}</div><div class="pr">${eur(a.p)}</div>
+      ${a.vars.length>1||a.vars[0].f?`<div class="dots">${a.vars.slice(0,8).map(v=>`<i style="background:${esc(v.hex||"#999")}"></i>`).join("")}</div>`:""}</div></button>`}).join("")
+    :`<div class="none" style="grid-column:1/-1">Kein Artikel gefunden.</div>`;
+}
+function renderCart(){
+  const items=CART.items,tot=items.reduce((a,x)=>a+x.qty*x.p,0);
+  $("lines").innerHTML=items.length?items.map((x,i)=>`<div class="line" data-l="${i}">
+      <div class="ln">${esc(x.a)}${x.f?`<small><i style="background:${esc(x.hex||"#999")}"></i>${esc(x.f)}</small>`:""}</div>
+      <div class="lt">${eur(x.qty*x.p)}</div>
+      <div class="qty"><button type="button" data-q="-1" aria-label="weniger">−</button><b>${x.qty}</b><button type="button" data-q="1" aria-label="mehr">+</button></div>
+      <label class="pin">je <input type="number" inputmode="decimal" step="0.01" min="0" value="${x.p.toFixed(2)}" data-p aria-label="Preis je Stück"> €</label></div>`).join("")
+    :`<div class="empty">Tippe links auf einen Artikel,<br>um ihn hinzuzufügen.</div>`;
+  $("total").textContent=eur(tot);
+  $("sell").disabled=!items.length||!market();
+  $("sell").textContent=!market()?"Erst einen Markt starten":items.length?`Verkauft – ${eur(tot)}`:"Verkauft";
+  $("cart-h").textContent=items.length?`Aktueller Verkauf (${items.reduce((a,x)=>a+x.qty,0)})`:"Aktueller Verkauf";
+  document.querySelectorAll("#payseg button").forEach(b=>b.classList.toggle("on",b.dataset.pay===CART.pay));
+  // Gegeben / Rückgeld (nur bar)
+  const bar=CART.pay==="Bar";$("given").hidden=!bar||!items.length;
+  const opts=[...new Set([tot,5,10,20,50].map(v=>Math.round(v*100)/100))].filter(v=>v>=tot).slice(0,5);
+  while(opts.length<5){const nx=[100,200].find(v=>v>=tot&&!opts.includes(v));if(!nx)break;opts.push(nx)}
+  $("given").innerHTML=opts.map(v=>`<button type="button" data-g="${v}" class="${CART.given===v?"on":""}">${v===Math.round(tot*100)/100?"Passend":eur(v).replace(",00","")}</button>`).join("");
+  const g=CART.given;$("change").hidden=!bar||!items.length||g==null;
+  if(g!=null){const r=g-tot;$("change").classList.toggle("short",r<-.004);$("change-l").textContent=r<-.004?"Es fehlen":"Rückgeld";$("change-v").textContent=eur(Math.abs(r))}
+  $("cart").classList.toggle("mini",!items.length);
+}
+// ---------- Warenkorb ----------
+function addItem(a,v){
+  const x=CART.items.find(x=>x.k===v.k&&Math.abs(x.p-a.p)<.004);
+  if(x)x.qty++;else CART.items.push({k:v.k,a:a.a,f:v.f,hex:v.hex,p:a.p,qty:1});
+  CART.given=null;saveCart();renderCart();renderGrid();
+  const el=document.querySelector(`.art[data-i="${DATA.artikel.indexOf(a)}"]`);if(el){el.classList.remove("flash");void el.offsetWidth;el.classList.add("flash")}
+}
+$("grid").addEventListener("click",e=>{
+  const b=e.target.closest(".art");if(!b)return;const a=DATA.artikel[+b.dataset.i];if(!a)return;
+  if(a.vars.length===1)return addItem(a,a.vars[0]);
+  const m=market(),sold=soldOf(m);
+  $("var-h").textContent=a.a+" – Farbe wählen";
+  $("vars").innerHTML=a.vars.map((v,j)=>{const l=leftOf(v.k,m,sold);return `<button type="button" class="var" data-j="${j}"><i style="background:${esc(v.hex||"#999")}"></i><span>${esc(v.f||"ohne Farbe")}${l!=null?`<small>noch ${Math.max(0,l)}</small>`:""}</span></button>`}).join("");
+  $("vars").onclick=ev=>{const vb=ev.target.closest(".var");if(!vb)return;addItem(a,a.vars[+vb.dataset.j]);$("sh-var").hidden=true};
+  $("sh-var").hidden=false;
+});
+$("lines").addEventListener("click",e=>{
+  const b=e.target.closest("[data-q]");if(!b)return;const i=+b.closest(".line").dataset.l,x=CART.items[i];
+  x.qty+=+b.dataset.q;if(x.qty<=0)CART.items.splice(i,1);CART.given=null;saveCart();renderCart();renderGrid();
+});
+$("lines").addEventListener("change",e=>{
+  if(!("p" in e.target.dataset))return;const x=CART.items[+e.target.closest(".line").dataset.l];
+  const v=parseFloat(String(e.target.value).replace(",","."));if(!isNaN(v)&&v>=0)x.p=Math.round(v*100)/100;CART.given=null;saveCart();renderCart();
+});
+$("clear").addEventListener("click",()=>{if(!CART.items.length)return;const old=JSON.parse(JSON.stringify(CART));CART.items=[];CART.given=null;saveCart();renderCart();renderGrid();toast("Verkauf geleert",()=>{CART=old;saveCart();renderCart();renderGrid()})});
+$("payseg").addEventListener("click",e=>{const b=e.target.closest("[data-pay]");if(!b)return;CART.pay=b.dataset.pay;CART.given=null;saveCart();renderCart()});
+$("given").addEventListener("click",e=>{const b=e.target.closest("[data-g]");if(!b)return;const v=+b.dataset.g;CART.given=CART.given===v?null:v;saveCart();renderCart()});
+$("sell").addEventListener("click",()=>{
+  const m=market();if(!m||!CART.items.length)return;
+  const s={id:uid(),t:new Date().toISOString(),pay:CART.pay,items:CART.items.map(x=>({k:x.k,a:x.a,f:x.f,qty:x.qty,p:x.p}))};
+  const tot=s.items.reduce((a,x)=>a+x.qty*x.p,0);
+  m.sales.push(s);if(!saveMk()){m.sales.pop();return}
+  const old=JSON.parse(JSON.stringify(CART));CART={items:[],pay:"Bar",given:null};saveCart();render();
+  toast(`Verkauft: ${eur(tot)} (${s.pay})`,()=>{const i=m.sales.findIndex(x=>x.id===s.id);if(i>=0)m.sales.splice(i,1);saveMk();CART=old;saveCart();render()});
+});
+$("q").addEventListener("input",renderGrid);
+// ---------- Märkte ----------
+function openMarketSheet(){
+  const plans=(DATA&&DATA.maerkte||[]).filter(p=>!MK.some(m=>m.macId===p.id&&m.closed));
+  $("mk-plan-wrap").hidden=!plans.length;
+  $("mk-plan").innerHTML=plans.map(p=>{const own=MK.find(m=>m.macId===p.id),n=Object.values(p.rows||{}).reduce((a,r)=>a+(r.mit||0),0);
+    return `<button type="button" class="opt${own&&own.id===ACT?" on":""}" data-plan="${esc(p.id)}"><span>${esc(p.name||"Markt")} <small>${deDate(p.date)} · ${n} Stück mitgenommen</small></span><span class="badge">${own?(own.id===ACT?"aktiv":"fortsetzen"):"starten"}</span></button>`}).join("");
+  const old=MK.filter(m=>!m.macId||m.closed||!plans.some(p=>p.id===m.macId)).slice().reverse();
+  $("mk-old-wrap").hidden=!old.length;
+  $("mk-old").innerHTML=old.map(m=>{const u=m.sales.filter(s=>!s.storno).reduce((a,s)=>a+s.items.reduce((b,x)=>b+x.qty*x.p,0),0);
+    return `<button type="button" class="opt${m.id===ACT?" on":""}" data-old="${esc(m.id)}"><span>${esc(m.name||"Markt")} <small>${deDate(m.date)} · ${eur(u)}</small></span><span class="badge${m.closed&&!m.sent?" warn":""}">${m.id===ACT?"aktiv":m.sent?"gesendet":m.closed?"nicht gesendet":"fortsetzen"}</span></button>`}).join("");
+  $("mk-new-name").value="";$("mk-new-date").value=isoToday();
+  $("sh-mk").hidden=false;
+}
+function activate(id){ACT=id;sv(K.act,ACT);$("sh-mk").hidden=true;render()}
+$("mk-plan").addEventListener("click",e=>{
+  const b=e.target.closest("[data-plan]");if(!b)return;const p=DATA.maerkte.find(x=>x.id===b.dataset.plan);
+  let m=MK.find(x=>x.macId===p.id);
+  if(!m){m={id:uid(),macId:p.id,name:p.name||"Markt",date:p.date||isoToday(),plan:Object.fromEntries(Object.entries(p.rows||{}).map(([k,r])=>[k,r.mit||0])),sales:[],closed:false,sent:false};MK.push(m);saveMk()}
+  else if(m.closed){m.closed=false;saveMk()}
+  activate(m.id);
+});
+$("mk-old").addEventListener("click",e=>{const b=e.target.closest("[data-old]");if(!b)return;const m=MK.find(x=>x.id===b.dataset.old);if(m.closed){m.closed=false;saveMk()}activate(m.id)});
+$("mk-new").addEventListener("click",()=>{
+  const m={id:uid(),macId:null,name:$("mk-new-name").value.trim()||"Markt",date:$("mk-new-date").value||isoToday(),plan:null,sales:[],closed:false,sent:false};
+  if(DATA&&DATA.bestand&&Object.keys(DATA.bestand).length){/* ohne Planung: kein „noch X“ */}
+  MK.push(m);saveMk();activate(m.id);toast(`„${m.name}“ gestartet`);
+});
+$("mk-btn").addEventListener("click",openMarketSheet);
+// ---------- Verlauf ----------
+function openHist(){
+  const m=market();if(!m){openMarketSheet();return}
+  $("hist-h").textContent=`${m.name||"Markt"} · ${deDate(m.date)}`;
+  const ok=m.sales.filter(s=>!s.storno);let u=0,n=0;const per={};
+  ok.forEach(s=>s.items.forEach(x=>{u+=x.qty*x.p;n+=x.qty;per[s.pay]=(per[s.pay]||0)+x.qty*x.p}));
+  $("hist-kp").innerHTML=[["Umsatz",eur(u)],["Stück",n],["Verkäufe",ok.length],["Bar",eur(per.Bar||0)],["PayPal / Karte",eur((per.PayPal||0)+(per.Karte||0))]].map(([k,v])=>`<div><small>${k}</small><b>${v}</b></div>`).join("");
+  $("hist-empty").hidden=m.sales.length>0;
+  $("hist-rows").innerHTML=m.sales.slice().reverse().map(s=>{const t=s.items.reduce((a,x)=>a+x.qty*x.p,0);
+    return `<tr class="${s.storno?"storno":""}"><td>${new Date(s.t).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})}</td><td style="text-align:left">${s.items.map(x=>`${x.qty}× ${esc(x.a)}${x.f?` <small>${esc(x.f)}</small>`:""}`).join("<br>")}</td><td>${esc(s.pay)}</td><td><b>${eur(t)}</b></td>
+      <td><button type="button" data-st="${esc(s.id)}">${s.storno?"Wiederherstellen":"Storno"}</button></td></tr>`}).join("");
+  const sold=soldOf(m),rev={};ok.forEach(s=>s.items.forEach(x=>rev[x.k]=(rev[x.k]||0)+x.qty*x.p));
+  const keys=[...new Set([...Object.keys(m.plan||{}),...Object.keys(sold)])],vs=allVars();
+  const rows=keys.map(k=>{const v=vs.find(x=>x.k===k),mit=m.plan&&m.plan[k]!=null?m.plan[k]:null;return {k,a:v?v.a:k.split("|")[0],f:v?v.f:(k.split("|")[1]||""),mit,s:sold[k]||0,u:rev[k]||0}})
+    .sort((x,y)=>y.s-x.s||x.a.localeCompare(y.a,"de"));
+  $("hist-art").innerHTML=rows.map(r=>`<tr><td>${esc(r.a)}${r.f?` <small>${esc(r.f)}</small>`:""}</td><td>${r.mit??"–"}</td><td><b>${r.s}</b></td><td>${r.mit!=null?Math.max(0,r.mit-r.s):"–"}</td><td>${eur(r.u)}</td></tr>`).join("")||`<tr><td colspan="5" style="text-align:left;color:var(--muted)">Noch nichts verkauft.</td></tr>`;
+  $("sh-hist").hidden=false;
+}
+$("hist-btn").addEventListener("click",openHist);
+$("hist-rows").addEventListener("click",e=>{const b=e.target.closest("[data-st]");if(!b)return;const m=market(),s=m.sales.find(x=>x.id===b.dataset.st);s.storno=!s.storno;saveMk();openHist();render()});
+// ---------- An Mac senden ----------
+async function sendMarket(){
+  const m=market();if(!m)return toast("Kein Markt aktiv.");
+  const ok=m.sales.filter(s=>!s.storno);
+  if(!ok.length&&!confirmTwice("send-empty","Noch nichts verkauft – trotzdem senden? Nochmal tippen."))return;
+  const d={typ:"3d-druck-ipad-markt",version:1,id:m.id,macId:m.macId||null,name:m.name,date:m.date,gesendet:new Date().toISOString(),
+    verkaeufe:ok.map(s=>({t:s.t,pay:s.pay,items:s.items}))};
+  const name=`iPad-Markt_${(m.name||"Markt").replace(/[^\wäöüÄÖÜß-]+/g,"-")}_${m.date}.json`,txt=JSON.stringify(d,null,1);
+  let done=false;
+  try{const f=new File([txt],name,{type:"application/json"});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:name});done=true}}
+  catch(e){if(e&&e.name==="AbortError")return}
+  if(!done){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type:"application/json"}));a.download=name;document.body.appendChild(a);a.click();a.remove();done=true}
+  m.closed=true;m.sent=true;saveMk();ACT=null;sv(K.act,null);$("sh-hist").hidden=true;$("sh-menu").hidden=true;render();
+  toast("Markt abgeschlossen – am Mac unter Verkauf → „iPad-Markt übernehmen“ laden.");
+}
+const pend={};function confirmTwice(k,msg){if(pend[k])return delete pend[k],true;pend[k]=1;setTimeout(()=>delete pend[k],3500);toast(msg);return false}
+$("send").addEventListener("click",()=>{if(confirmTwice("send","Markt wirklich abschließen? Nochmal tippen zum Senden."))sendMarket()});
+$("m-send").addEventListener("click",()=>{if(confirmTwice("send2","Markt wirklich abschließen? Nochmal tippen zum Senden."))sendMarket()});
+// ---------- Import ----------
+function importFile(e){
+  const f=e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{e.target.value="";let d;try{d=JSON.parse(r.result)}catch(err){return toast("Die Datei konnte nicht gelesen werden.")}
+    if(!d||d.typ!=="3d-druck-ipad"||!Array.isArray(d.artikel))return toast("Bitte die Datei „iPad-Artikel_…“ vom Mac wählen.");
+    DATA=d;if(!sv(K.data,d))return;
+    // Planung laufender Mac-Märkte aktualisieren
+    MK.forEach(m=>{if(m.macId&&!m.closed){const p=d.maerkte.find(x=>x.id===m.macId);if(p)m.plan=Object.fromEntries(Object.entries(p.rows||{}).map(([k,r])=>[k,r.mit||0]))}});saveMk();
+    $("sh-menu").hidden=true;render();toast(`${d.artikel.length} Artikel geladen (Stand ${deDate(d.datum)})`);
+    if(!market())setTimeout(openMarketSheet,400);
+  };r.readAsText(f);
+}
+$("imp1").addEventListener("change",importFile);$("imp2").addEventListener("change",importFile);
+$("menu-btn").addEventListener("click",()=>{
+  $("menu-info").textContent=DATA?`${DATA.artikel.length} Artikel vom ${deDate(DATA.datum)} geladen.`:"Noch keine Artikel geladen.";
+  $("m-send").disabled=!market();$("sh-menu").hidden=false});
+$("m-market").addEventListener("click",()=>{$("sh-menu").hidden=true;openMarketSheet()});
+document.querySelectorAll(".sheet").forEach(s=>{s.addEventListener("click",e=>{if(e.target===s||e.target.closest("[data-close]"))s.hidden=true})});
+// ---------- Hinweis ----------
+let tT=null,tUndo=null;
+function toast(t,undo){$("toast-t").textContent=t;tUndo=undo||null;$("toast-undo").hidden=!undo;$("toast").hidden=false;clearTimeout(tT);tT=setTimeout(()=>$("toast").hidden=true,undo?6000:3500)}
+$("toast-undo").addEventListener("click",()=>{if(tUndo)tUndo();tUndo=null;$("toast").hidden=true});
+render();
+if(DATA&&!market())setTimeout(openMarketSheet,300);
+if("serviceWorker" in navigator&&window.isSecureContext&&location.protocol!=="file:")navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>
